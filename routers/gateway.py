@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from models import Campaign
-import services  # services.py 파일을 가져옵니다.
+import services
+from dependencies import common_parameters
 
 router = APIRouter()
 
@@ -8,6 +9,13 @@ router = APIRouter()
 @router.get("/gateway")
 def read_gateway():
     return {"message": "This is the gateway"}
+
+
+@router.get("/gateway/campaigns")
+async def list_campaigns(commons: dict = Depends(common_parameters)):
+    # FastAPI가 common_parameters 함수를 실행하고, 그 결과를 commons 파라미터에 주입합니다.
+    # 실제 앱에서는 이 값을 사용하여 데이터베이스를 쿼리합니다. (e.g., DB.get_items(skip=commons["skip"], limit=commons["limit"]))
+    return {"message": "Listing campaigns with pagination", "params": commons}
 
 
 # Pydantic 모델을 사용하는 POST 엔드포인트
